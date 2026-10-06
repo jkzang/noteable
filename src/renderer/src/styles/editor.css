@@ -1,0 +1,286 @@
+/* Notion-like editing surface. */
+
+.editor .prose {
+  outline: none;
+  font-size: 16px;
+  line-height: 1.65;
+  min-height: 50vh;
+  padding-bottom: 30vh;
+}
+
+.prose > * + * {
+  margin-top: 0.4em;
+}
+
+.prose p {
+  margin: 0.2em 0;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.prose h1 {
+  font-size: 1.875em;
+  margin: 1.2em 0 0.2em;
+}
+
+.prose h2 {
+  font-size: 1.5em;
+  margin: 1.1em 0 0.2em;
+}
+
+.prose h3 {
+  font-size: 1.25em;
+  margin: 1em 0 0.2em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.6em;
+  margin: 0.2em 0;
+}
+
+.prose li p {
+  margin: 0.1em 0;
+}
+
+.prose blockquote {
+  margin: 0.6em 0;
+  padding: 0.1em 0 0.1em 1em;
+  border-left: 3px solid var(--text);
+}
+
+/* Scripture quotes read better in a serif. */
+.prose blockquote p {
+  font-family: var(--font-serif);
+  font-size: 1.05em;
+}
+
+.prose blockquote strong {
+  font-family: var(--font);
+}
+
+.prose code {
+  background: var(--bg-hover);
+  color: var(--accent);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+
+.prose pre {
+  background: var(--bg-hover);
+  border-radius: var(--radius);
+  padding: 0.9em 1.1em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.2em 0;
+}
+
+.prose hr.ProseMirror-selectednode {
+  border-top-color: var(--accent);
+}
+
+.prose a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--text-faint);
+  text-underline-offset: 2px;
+}
+
+.prose mark {
+  background: color-mix(in srgb, #fad000 45%, transparent);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* To-do lists */
+.prose ul[data-type='taskList'] {
+  list-style: none;
+  padding-left: 0.2em;
+}
+
+.prose ul[data-type='taskList'] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+
+.prose ul[data-type='taskList'] li > label {
+  flex-shrink: 0;
+  margin-top: 0.3em;
+  user-select: none;
+}
+
+.prose ul[data-type='taskList'] li > label input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.prose ul[data-type='taskList'] li > div {
+  flex: 1;
+}
+
+.prose ul[data-type='taskList'] li[data-checked='true'] > div {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Placeholder ("Type '/' for commands…") on the empty line you're on. */
+.prose p.is-empty::before,
+.prose h1.is-empty::before,
+.prose h2.is-empty::before,
+.prose h3.is-empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-faint);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.prose p.is-empty:not(.is-editor-empty):not(:focus-within)::before {
+  content: none;
+}
+
+/* ------------------------------------------------------------ slash menu */
+
+.slash-menu {
+  position: absolute;
+  z-index: 70;
+  width: 300px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.floating {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 70;
+}
+
+.slash-menu.empty {
+  color: var(--text-muted);
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.slash-menu-heading {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-faint);
+  padding: 4px 8px 6px;
+}
+
+.slash-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.slash-item.selected {
+  background: var(--bg-hover);
+}
+
+.slash-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-muted);
+}
+
+.slash-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slash-title {
+  font-size: 14px;
+}
+
+.slash-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slash-item kbd {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------ bubble menu */
+
+.bubble-menu {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.bubble-button {
+  width: 30px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.bubble-button:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.bubble-button.active {
+  color: var(--accent);
+}
+
+.bubble-input {
+  width: 240px;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 4px 8px;
+}
