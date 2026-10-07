@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import { BookOpen, NotebookPen, Quote, Search } from 'lucide-react'
 import { citeVerses, ESV_SHORT_COPYRIGHT, passageToMarkdown } from '@shared/esv'
 import type { BiblePassage, Note } from '@shared/types'
+import { PageIcon } from '@renderer/components/PageIcon'
 import { NoteEditor } from '@renderer/components/editor/NoteEditor'
 import { api } from '@renderer/lib/api'
 import { useAutosave } from '@renderer/lib/useAutosave'
@@ -152,7 +153,7 @@ export function BibleView({ initialReference }: { initialReference?: string }) {
                     void lookup(String(n.frontmatter.passage))
                   }}
                 >
-                  <BookOpen size={16} />
+                  <PageIcon note={n} size={16} />
                   <span>{n.title}</span>
                   <span className="muted">{String(n.frontmatter.passage)}</span>
                 </button>

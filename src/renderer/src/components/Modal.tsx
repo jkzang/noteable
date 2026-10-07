@@ -6,7 +6,7 @@ interface Props {
   onClose(): void
   children: React.ReactNode
   className?: string
-  /** Align near the top like Todoist's quick add, instead of centred. */
+  /** Align near the top like Notion's search, instead of centred. */
   top?: boolean
 }
 

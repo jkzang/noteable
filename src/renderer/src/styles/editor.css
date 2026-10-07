@@ -1,57 +1,69 @@
-/* Notion-like editing surface. */
+/* Notion-like editing surface: 16px body, tight block spacing, 600-weight headings. */
 
 .editor .prose {
   outline: none;
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.5;
+  caret-color: var(--text);
   min-height: 50vh;
-  padding-bottom: 30vh;
-}
-
-.prose > * + * {
-  margin-top: 0.4em;
+  padding: 4px 0 30vh;
 }
 
 .prose p {
-  margin: 0.2em 0;
+  margin: 1px 0;
+  padding: 3px 2px;
 }
 
 .prose h1,
 .prose h2,
 .prose h3 {
   line-height: 1.3;
-  font-weight: 700;
+  font-weight: 600;
+  color: var(--text-strong);
+  padding: 3px 2px;
 }
 
 .prose h1 {
   font-size: 1.875em;
-  margin: 1.2em 0 0.2em;
+  margin: 1.4em 0 0.1em;
 }
 
 .prose h2 {
   font-size: 1.5em;
-  margin: 1.1em 0 0.2em;
+  margin: 1.1em 0 0.1em;
 }
 
 .prose h3 {
   font-size: 1.25em;
-  margin: 1em 0 0.2em;
+  margin: 0.9em 0 0.1em;
+}
+
+.prose > :first-child {
+  margin-top: 2px;
 }
 
 .prose ul,
 .prose ol {
-  padding-left: 1.6em;
-  margin: 0.2em 0;
+  padding-left: 1.7em;
+  margin: 1px 0;
+}
+
+.prose li {
+  padding-left: 0.1em;
 }
 
 .prose li p {
-  margin: 0.1em 0;
+  margin: 0;
+}
+
+.prose li::marker {
+  color: var(--text);
 }
 
 .prose blockquote {
-  margin: 0.6em 0;
-  padding: 0.1em 0 0.1em 1em;
-  border-left: 3px solid var(--text);
+  margin: 4px 0;
+  padding: 0 0 0 14px;
+  border-left: 3px solid currentColor;
 }
 
 /* Scripture quotes read better in a serif. */
@@ -65,18 +77,21 @@
 }
 
 .prose code {
-  background: var(--bg-hover);
-  color: var(--accent);
-  padding: 0.15em 0.35em;
+  background: var(--bg-code);
+  color: var(--red);
+  padding: 0.2em 0.4em;
   border-radius: 4px;
 }
 
 .prose pre {
-  background: var(--bg-hover);
-  border-radius: var(--radius);
-  padding: 0.9em 1.1em;
+  background: var(--bg-code);
+  border-radius: 4px;
+  margin: 4px 0;
+  padding: 32px 32px 32px 28px;
   font-family: var(--font-mono);
-  font-size: 0.85em;
+  font-size: 85%;
+  line-height: 1.5;
+  tab-size: 2;
   overflow-x: auto;
 }
 
@@ -89,7 +104,7 @@
 .prose hr {
   border: none;
   border-top: 1px solid var(--border);
-  margin: 1.2em 0;
+  margin: 14px 0;
 }
 
 .prose hr.ProseMirror-selectednode {
@@ -97,14 +112,23 @@
 }
 
 .prose a {
-  color: var(--text);
+  color: inherit;
   text-decoration: underline;
   text-decoration-color: var(--text-faint);
   text-underline-offset: 2px;
+  opacity: 0.85;
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose strong {
+  font-weight: 600;
 }
 
 .prose mark {
-  background: color-mix(in srgb, #fad000 45%, transparent);
+  background: var(--highlight);
   color: inherit;
   border-radius: 2px;
   padding: 0 1px;
@@ -129,10 +153,30 @@
 }
 
 .prose ul[data-type='taskList'] li > label input {
+  appearance: none;
+  display: grid;
+  place-items: center;
   width: 16px;
   height: 16px;
-  accent-color: var(--accent);
+  margin: 0;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
   cursor: pointer;
+}
+
+.prose ul[data-type='taskList'] li > label input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.prose ul[data-type='taskList'] li > label input:checked::after {
+  content: '';
+  width: 4px;
+  height: 8px;
+  margin-top: -2px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
 }
 
 .prose ul[data-type='taskList'] li > div {
@@ -140,8 +184,9 @@
 }
 
 .prose ul[data-type='taskList'] li[data-checked='true'] > div {
-  color: var(--text-muted);
+  color: var(--text-faint);
   text-decoration: line-through;
+  text-decoration-color: var(--text-faint);
 }
 
 /* Placeholder ("Type '/' for commands…") on the empty line you're on. */
@@ -165,12 +210,11 @@
 .slash-menu {
   position: absolute;
   z-index: 70;
-  width: 300px;
-  max-height: 340px;
+  width: 324px;
+  max-height: 360px;
   overflow-y: auto;
-  padding: 6px;
+  padding: 4px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
 }
@@ -189,10 +233,10 @@
 }
 
 .slash-menu-heading {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-faint);
-  padding: 4px 8px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 6px 8px 4px;
 }
 
 .slash-item {
@@ -210,14 +254,14 @@
 }
 
 .slash-icon {
-  width: 38px;
-  height: 38px;
+  width: 46px;
+  height: 46px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 4px;
   background: var(--bg);
+  box-shadow: 0 0 0 1px var(--border-soft);
   color: var(--text-muted);
 }
 
@@ -230,6 +274,7 @@
 
 .slash-title {
   font-size: 14px;
+  color: var(--text);
 }
 
 .slash-desc {
@@ -251,11 +296,10 @@
 .bubble-menu {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   padding: 3px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 8px;
   box-shadow: var(--shadow);
 }
 
@@ -275,6 +319,10 @@
 
 .bubble-button.active {
   color: var(--accent);
+}
+
+.prose ::selection {
+  background: var(--accent-soft);
 }
 
 .bubble-input {
