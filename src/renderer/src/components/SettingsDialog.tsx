@@ -57,7 +57,7 @@ export function SettingsDialog() {
 
       <section className="settings-section">
         <h3>Vault</h3>
-        <p className="muted">Notes are plain Markdown files in this folder. Tasks and events live in its <code>.noteable</code> folder.</p>
+        <p className="muted">Every page is a plain Markdown file in this folder.</p>
         <div className="settings-row">
           <code className="path">{vault?.path}</code>
           {isDesktop && (
@@ -127,23 +127,7 @@ export function SettingsDialog() {
               <option value="dark">Dark</option>
             </select>
           </label>
-          <label className="field">
-            Week starts on
-            <select
-              className="input"
-              value={settings.weekStartsOn}
-              onChange={(e) => void updateSettings({ weekStartsOn: Number(e.target.value) as 0 | 1 })}
-            >
-              <option value={0}>Sunday</option>
-              <option value={1}>Monday</option>
-            </select>
-          </label>
         </div>
-      </section>
-
-      <section className="settings-section">
-        <h3>Integrations</h3>
-        <p className="muted">Google Calendar and Google Tasks sync are coming soon.</p>
       </section>
     </Modal>
   )

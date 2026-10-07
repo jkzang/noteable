@@ -5,8 +5,7 @@
 import type { CreateNoteInput, NoteableApi } from '@shared/api'
 import { buildEsvUrl, ESV_COPYRIGHT, toPassage, type EsvTextResponse } from '@shared/esv'
 import { basename, dirname, joinPath, titleToFileName } from '@shared/filenames'
-import type { BiblePassage, CalendarEvent, Note, NoteFrontmatter, NoteMeta, Project, Settings, Task } from '@shared/types'
-import { toISODate } from './dates'
+import type { BiblePassage, Note, NoteFrontmatter, NoteMeta, Settings } from '@shared/types'
 
 interface StoredNote {
   body: string
@@ -16,9 +15,6 @@ interface StoredNote {
 
 interface MemoryState {
   notes: Record<string, StoredNote>
-  tasks: Task[]
-  projects: Project[]
-  events: CalendarEvent[]
   settings: Settings
 }
 
@@ -42,27 +38,19 @@ const SAMPLE_PSALM_23: BiblePassage = {
 
 function seed(): MemoryState {
   const now = new Date().toISOString()
-  const today = toISODate(new Date())
-  const bible: Project = { id: crypto.randomUUID(), name: 'Bible Study', color: '#7ecc49', order: 0 }
-  const home: Project = { id: crypto.randomUUID(), name: 'Home', color: '#4073ff', order: 1 }
-  const task = (t: Partial<Task> & { content: string }, order: number): Task => ({
-    id: crypto.randomUUID(),
-    priority: 4,
-    labels: [],
-    completed: false,
-    order,
-    createdAt: now,
-    updatedAt: now,
-    ...t
-  })
   return {
     notes: {
       'Welcome to Noteable.md': {
-        frontmatter: { created: now },
+        frontmatter: { created: now, icon: '👋' },
         mtime: Date.now(),
         body:
-          'This is the **browser preview** — data lives in localStorage. The desktop app stores everything as Markdown in a vault folder.\n\n' +
-          "Type `/` for commands, or try Markdown shortcuts like `#`, `-`, `[]` and `>`.\n\n- [ ] Try the slash menu\n- [x] Open the app\n"
+          'This is the **browser preview** — data lives in localStorage. The desktop app stores every page as Markdown in a vault folder.\n\n' +
+          "Type `/` for commands, or try Markdown shortcuts like `#`, `-`, `[]` and `>`. Press `⌘K` to search.\n\n- [ ] Try the slash menu\n- [x] Open the app\n"
+      },
+      'Ideas.md': {
+        frontmatter: { created: now, icon: '💡' },
+        mtime: Date.now() - 500,
+        body: '## Someday\n\n- Learn to bake sourdough\n- Plan a weekend hike\n'
       },
       'Bible Study/Psalm 23.md': {
         frontmatter: { created: now, passage: 'Psalm 23', tags: ['bible'] },
@@ -70,26 +58,7 @@ function seed(): MemoryState {
         body: '## Observation\n\nThe shepherd *provides*, *leads* and *restores*.\n\n## Application\n\n'
       }
     },
-    projects: [bible, home],
-    tasks: [
-      task({ content: 'Explore Noteable', priority: 1, due: { date: today } }, 0),
-      task({ content: 'Read Psalm 1', projectId: bible.id, labels: ['devotional'], due: { date: today, time: '07:00', recurrence: 'every day' } }, 1),
-      task({ content: 'Prepare small group questions', description: 'Romans 8', projectId: bible.id, priority: 2, due: { date: toISODate(new Date(Date.now() + 86400000)) } }, 2),
-      task({ content: 'Fix the garden gate', projectId: home.id, priority: 3 }, 3)
-    ],
-    events: [
-      {
-        id: crypto.randomUUID(),
-        title: 'Small group',
-        start: new Date(new Date().setHours(19, 0, 0, 0)).toISOString(),
-        end: new Date(new Date().setHours(20, 30, 0, 0)).toISOString(),
-        allDay: false,
-        calendarId: 'local',
-        color: '#7ecc49',
-        updatedAt: now
-      }
-    ],
-    settings: { theme: 'system', weekStartsOn: 0 }
+    settings: { theme: 'system' }
   }
 }
 
@@ -127,22 +96,6 @@ export function createMemoryApi(): NoteableApi {
       if (!state.notes[p]) return p
     }
   }
-  const collection = <T extends { id: string }>(key: 'tasks' | 'projects' | 'events') => ({
-    list: async () => [...(state[key] as unknown as T[])],
-    upsert: async (item: T) => {
-      const list = state[key] as unknown as T[]
-      const i = list.findIndex((x) => x.id === item.id)
-      if (i === -1) list.push(item)
-      else list[i] = item
-      save()
-      return item
-    },
-    remove: async (id: string) => {
-      ;(state as unknown as Record<string, T[]>)[key] = (state[key] as unknown as T[]).filter((x) => x.id !== id)
-      save()
-    }
-  })
-
   return {
     vault: {
       info: async () => ({ path: '(browser storage)', name: 'Browser preview' }),
@@ -185,9 +138,6 @@ export function createMemoryApi(): NoteableApi {
         save()
       }
     },
-    tasks: collection<Task>('tasks'),
-    projects: collection<Project>('projects'),
-    events: collection<CalendarEvent>('events'),
     settings: {
       get: async () => state.settings,
       update: async (patch) => {

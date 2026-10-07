@@ -3,18 +3,7 @@
 // exposed through the preload script as `window.noteable`. In the browser
 // (npm run dev:web) an in-memory implementation is used instead.
 
-import type {
-  BackupResult,
-  BiblePassage,
-  CalendarEvent,
-  Note,
-  NoteFrontmatter,
-  NoteMeta,
-  Project,
-  Settings,
-  Task,
-  VaultInfo
-} from './types'
+import type { BackupResult, BiblePassage, Note, NoteFrontmatter, NoteMeta, Settings, VaultInfo } from './types'
 
 export interface CreateNoteInput {
   title: string
@@ -38,21 +27,6 @@ export interface NoteableApi {
     /** Renames the file to match the new title; resolves to the new meta (path may change). */
     rename(path: string, title: string): Promise<NoteMeta>
     remove(path: string): Promise<void>
-  }
-  tasks: {
-    list(): Promise<Task[]>
-    upsert(task: Task): Promise<Task>
-    remove(id: string): Promise<void>
-  }
-  projects: {
-    list(): Promise<Project[]>
-    upsert(project: Project): Promise<Project>
-    remove(id: string): Promise<void>
-  }
-  events: {
-    list(): Promise<CalendarEvent[]>
-    upsert(event: CalendarEvent): Promise<CalendarEvent>
-    remove(id: string): Promise<void>
   }
   settings: {
     get(): Promise<Settings>
@@ -91,15 +65,6 @@ export const API_CHANNELS: ApiChannel[] = [
   'notes.write',
   'notes.rename',
   'notes.remove',
-  'tasks.list',
-  'tasks.upsert',
-  'tasks.remove',
-  'projects.list',
-  'projects.upsert',
-  'projects.remove',
-  'events.list',
-  'events.upsert',
-  'events.remove',
   'settings.get',
   'settings.update',
   'bible.passage',

@@ -3,32 +3,23 @@ import { mkdir, readdir, readFile, rename, stat, writeFile } from 'node:fs/promi
 import { basename as pathBasename, join, relative, resolve, sep } from 'node:path'
 import type { CreateNoteInput } from '@shared/api'
 import { basename, dirname, joinPath, titleToFileName } from '@shared/filenames'
-import type { CalendarEvent, Note, NoteFrontmatter, NoteMeta, Project, Task, VaultInfo } from '@shared/types'
+import type { Note, NoteFrontmatter, NoteMeta, VaultInfo } from '@shared/types'
 import { parseNote, serializeNote } from './frontmatter'
-import { JsonCollection, writeFileAtomic } from './jsonCollection'
+import { writeFileAtomic } from './atomic'
 
-/** Hidden folder inside the vault that holds app data (tasks, events, …). */
+/** Hidden folder that marks a folder as a Noteable vault (and holds any app data). */
 export const APP_DIR = '.noteable'
 /** Deleted notes are moved here, like Obsidian's `.trash`. */
 export const TRASH_DIR = '.trash'
 
 /**
  * A vault is a plain folder on disk. Notes are Markdown files (with optional
- * YAML frontmatter) anywhere inside it; structured data lives in `.noteable/`.
+ * YAML frontmatter) anywhere inside it; `.noteable/` marks it as a vault.
  * Nothing is locked into a database, so the folder can be synced, versioned
  * or opened in other Markdown tools.
  */
 export class Vault {
-  readonly tasks: JsonCollection<Task>
-  readonly projects: JsonCollection<Project>
-  readonly events: JsonCollection<CalendarEvent>
-
-  private constructor(readonly root: string) {
-    const data = join(root, APP_DIR)
-    this.tasks = new JsonCollection(join(data, 'tasks.json'))
-    this.projects = new JsonCollection(join(data, 'projects.json'))
-    this.events = new JsonCollection(join(data, 'events.json'))
-  }
+  private constructor(readonly root: string) {}
 
   /** Opens (creating if needed) a vault. `isNew` is true when the app folder did not exist yet. */
   static async open(root: string): Promise<{ vault: Vault; isNew: boolean }> {

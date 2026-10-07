@@ -59,18 +59,6 @@ const handlers: Handlers = {
   'notes.rename': (path, title) => current().renameNote(path, title),
   'notes.remove': (path) => current().removeNote(path),
 
-  'tasks.list': () => current().tasks.list(),
-  'tasks.upsert': (task) => current().tasks.upsert(task),
-  'tasks.remove': (id) => current().tasks.remove(id),
-
-  'projects.list': () => current().projects.list(),
-  'projects.upsert': (project) => current().projects.upsert(project),
-  'projects.remove': (id) => current().projects.remove(id),
-
-  'events.list': () => current().events.list(),
-  'events.upsert': (event) => current().events.upsert(event),
-  'events.remove': (id) => current().events.remove(id),
-
   'settings.get': () => loadSettings(),
   'settings.update': (patch) => updateSettings(patch),
 

@@ -2,9 +2,9 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { app, safeStorage } from 'electron'
 import type { Settings } from '@shared/types'
-import { writeFileAtomic } from './vault/jsonCollection'
+import { writeFileAtomic } from './vault/atomic'
 
-const DEFAULTS: Settings = { theme: 'system', weekStartsOn: 0 }
+const DEFAULTS: Settings = { theme: 'system' }
 
 /** On-disk shape: secrets are stored encrypted with the OS keychain when possible. */
 interface StoredSettings extends Omit<Settings, 'esvApiKey'> {

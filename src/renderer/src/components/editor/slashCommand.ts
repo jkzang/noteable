@@ -2,6 +2,7 @@ import { computePosition, flip, offset, shift } from '@floating-ui/dom'
 import { Extension } from '@tiptap/core'
 import { ReactRenderer } from '@tiptap/react'
 import Suggestion, { type SuggestionOptions, type SuggestionProps } from '@tiptap/suggestion'
+import { mightBeReference } from '@shared/bibleRef'
 import { SlashMenu, type SlashMenuHandle, type SlashMenuProps } from './SlashMenu'
 import { filterSlashItems, type SlashItem } from './slashItems'
 
@@ -24,7 +25,10 @@ export const SlashCommand = Extension.create({
   addProseMirrorPlugins() {
     const options: Omit<SuggestionOptions<SlashItem>, 'editor'> = {
       char: '/',
-      allowSpaces: false,
+      // Spaces are allowed so "/Matthew 12: 13-24" works, but the menu only
+      // stays open past a space while the text still looks like a reference.
+      allowSpaces: true,
+      shouldShow: ({ query }) => !/\s/.test(query) || mightBeReference(query),
       startOfLine: false,
       items: ({ query }) => filterSlashItems(query),
       command: ({ editor, range, props }) => props.run(editor, range),

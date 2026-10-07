@@ -2,7 +2,6 @@ import { mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { Task } from '@shared/types'
 import { parseNote, serializeNote } from './frontmatter'
 import { Vault } from './vault'
 
@@ -94,27 +93,7 @@ describe('Vault notes', () => {
   })
 })
 
-describe('Vault collections', () => {
-  it('persists tasks to .noteable/tasks.json', async () => {
-    const task: Task = {
-      id: 't1',
-      content: 'Read Psalm 1',
-      priority: 2,
-      labels: [],
-      completed: false,
-      order: 0,
-      createdAt: '2026-10-06T00:00:00.000Z',
-      updatedAt: '2026-10-06T00:00:00.000Z'
-    }
-    await vault.tasks.upsert(task)
-    await vault.tasks.upsert({ ...task, id: 't2' })
-    await vault.tasks.remove('t2')
-
-    const reopened = (await Vault.open(root)).vault
-    expect(await reopened.tasks.list()).toEqual([task])
-    expect(JSON.parse(await readFile(join(root, '.noteable', 'tasks.json'), 'utf8'))).toEqual([task])
-  })
-
+describe('Vault folder', () => {
   it('reports whether the vault is new', async () => {
     expect((await Vault.open(root)).isNew).toBe(false)
     const fresh = await mkdtemp(join(tmpdir(), 'noteable-fresh-'))
