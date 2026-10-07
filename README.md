@@ -14,8 +14,11 @@ Notion-style notes in a local-first desktop app, with ESV Bible study built in.
 - **Quick find.** `⌘K` / `⌘P` (`Ctrl` on Windows/Linux) searches pages by
   title, or creates a new one.
 - **Bible study.** Look up any passage with the ESV API, read it beside your
-  study note, click verses to quote them into the note, or drop a passage into
-  any page with `/passage`. Study notes use an Observation → Interpretation →
+  study note, click verses to quote them into the note, or type a reference
+  straight into the slash menu — `/Matthew 12`, `/Matthew 12:13`,
+  `/Matthew 12: 13-24`, `/Mt 12:46-13:9`, `/1 Cor 13:4-7` — and press Enter to
+  insert it as a quote. A chapter is required (`/Matthew` alone won't insert
+  the whole book). `/passage` opens a look-up dialog instead. Study notes use an Observation → Interpretation →
   Application → Prayer template.
 - **Backups.** One click copies the vault into a folder of your choice — pick
   one inside Dropbox / iCloud Drive / Google Drive for an off-site copy.

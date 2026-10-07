@@ -20,7 +20,7 @@ Folders in your vault show up as groups in the sidebar. Hover one and click \`+\
 ## Bible study
 
 Add your ESV API key in **Settings**, then open **Bible Study** in the sidebar and look up a passage.
-In any page, type \`/passage\` to drop a passage in as a quote.
+In any page, type a reference after a slash — \`/Matthew 12:13-24\` or a whole chapter like \`/Psalm 23\` — and press Enter to drop it in as a quote.
 `
 
 export async function seedVault(vault: Vault): Promise<void> {

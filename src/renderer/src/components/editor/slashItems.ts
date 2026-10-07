@@ -16,7 +16,10 @@ import {
   Quote,
   type LucideIcon
 } from 'lucide-react'
+import { parseReference, type BibleReference } from '@shared/bibleRef'
 import { passageToMarkdown } from '@shared/esv'
+import type { BiblePassage } from '@shared/types'
+import { api } from '@renderer/lib/api'
 import { useStore } from '@renderer/store/useStore'
 
 export interface SlashItem {
@@ -26,10 +29,15 @@ export interface SlashItem {
   keywords: string[]
   /** Markdown shortcut shown as a hint, Notion-style. */
   shortcut?: string
+  /** Menu section heading; defaults to "Basic blocks". */
+  group?: string
   run(editor: Editor, range: Range): void
 }
 
 const chain = (editor: Editor, range: Range) => editor.chain().focus().deleteRange(range)
+
+const insertPassage = (editor: Editor, passage: BiblePassage) =>
+  editor.chain().focus().insertContent(passageToMarkdown(passage) + '\n\n', { contentType: 'markdown' }).run()
 
 export const SLASH_ITEMS: SlashItem[] = [
   {
@@ -94,9 +102,7 @@ export const SLASH_ITEMS: SlashItem[] = [
     keywords: ['bible', 'passage', 'verse', 'scripture', 'esv'],
     run: (e, r) => {
       chain(e, r).run()
-      useStore.getState().pickPassage((passage) => {
-        e.chain().focus().insertContent(passageToMarkdown(passage) + '\n\n', { contentType: 'markdown' }).run()
-      })
+      useStore.getState().pickPassage((passage) => insertPassage(e, passage))
     }
   },
   {
@@ -140,10 +146,29 @@ export const SLASH_ITEMS: SlashItem[] = [
   }
 ]
 
+/** "/Matthew 12:13-24" → an item that fetches the passage and inserts it as a quote. */
+function referenceItem(ref: BibleReference): SlashItem {
+  return {
+    title: ref.label,
+    description: 'Insert this passage (ESV)',
+    icon: BookOpen,
+    keywords: [],
+    group: 'Bible',
+    run: (e, r) => {
+      chain(e, r).run()
+      api.bible.passage(ref.query).then(
+        (passage) => insertPassage(e, passage),
+        (err: Error) => useStore.getState().notify(err.message)
+      )
+    }
+  }
+}
+
 export function filterSlashItems(query: string): SlashItem[] {
+  const ref = parseReference(query)
   const q = query.toLowerCase().trim()
-  if (!q) return SLASH_ITEMS
-  return SLASH_ITEMS.filter(
-    (item) => item.title.toLowerCase().includes(q) || item.keywords.some((k) => k.startsWith(q))
-  )
+  const blocks = q
+    ? SLASH_ITEMS.filter((item) => item.title.toLowerCase().includes(q) || item.keywords.some((k) => k.startsWith(q)))
+    : SLASH_ITEMS
+  return ref ? [referenceItem(ref), ...blocks] : blocks
 }
