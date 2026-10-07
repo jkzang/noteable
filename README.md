@@ -1,7 +1,7 @@
 # Noteable
 
 Notes, tasks and a calendar in one local-first desktop app — Notion's editor,
-Todoist's task flow and a Google-Calendar-style week view, with ESV Bible study
+Todoist's task flow and a Google-Calendar-style calendar, with ESV Bible study
 built in.
 
 - **Local-first, like Obsidian.** Your data lives in a *vault* folder on disk.
@@ -15,7 +15,12 @@ built in.
   P1–P4; labels; recurring tasks. Press **Q** anywhere for quick add with
   natural-language parsing:
   `Read Romans 8 tomorrow 7am p2 #Bible Study @devotional every day`.
-- **Calendar.** Week view with local events and your scheduled tasks.
+- **Google-Calendar-style calendar.** Day, 4-day, Week, Month and Schedule
+  views with a mini-month side panel. Click or drag on empty space to create
+  an event (or a task), drag events to move them, drag their bottom edge to
+  resize. Multi-day and all-day events span across days. Click an event for a
+  details card. Google's shortcuts work: **D/W/M/X/A** switch views, **T**
+  today, **J/K** next/previous, **C** create.
 - **Bible study.** Look up any passage with the ESV API, read it beside your
   study note, click verses to quote them into the note, or drop a passage into
   any note with `/passage`. Study notes use an Observation → Interpretation →

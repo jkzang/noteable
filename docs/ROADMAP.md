@@ -7,7 +7,9 @@
 - [x] Notion-style editor: slash menu, Markdown shortcuts, bubble toolbar, to-dos
 - [x] Todoist-style tasks: Inbox / Today / Upcoming / Projects, P1–P4, labels,
       natural-language quick add (`Q`), recurring tasks, undo toasts
-- [x] Week calendar with local events and scheduled tasks
+- [x] Google-Calendar-style calendar: Day / 4-day / Week / Month / Schedule
+      views, mini month, drag to create/move/resize, multi-day events, event
+      detail cards, Google's keyboard shortcuts; scheduled tasks shown alongside
 - [x] ESV passage lookup, Bible Study view (reader + study note, quote verses),
       `/passage` in any note
 - [x] Folder backup (works with any synced folder)
@@ -30,8 +32,9 @@
 - [ ] Filters & labels views
 
 **Calendar**
-- [ ] Day and month views; drag to create/move/resize events
 - [ ] Recurring events
+- [ ] Search events (Google's `/`)
+- [ ] Auto-scroll the grid while dragging near its edge
 
 **Bible study**
 - [ ] Hover a reference like "John 3:16" in any note to preview it
